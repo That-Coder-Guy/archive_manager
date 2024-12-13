@@ -1,0 +1,127 @@
+import { Button, VerticalBox, GridBox, ComboBox, TextEdit, ScrollView, LineEdit, GroupBox, HorizontalBox } from "std-widgets.slint";
+
+export enum AppState {
+    Select,
+    Manipulate
+}
+
+export component Container inherits Rectangle {
+    background: #000000bb;
+    border-radius: 20pt;
+    drop-shadow-blur: 15pt;
+    drop-shadow-color: #00000066;
+}
+
+export component AppWindow inherits Window
+{
+    // Callbacks
+    callback open_folder_dialog() -> string;
+
+    // Properties
+    in-out property <string> selected_path: "";
+    in-out property <AppState> current_state: AppState.Select;
+
+    title: "Archive Manager";
+    background: @linear-gradient(135deg, #0094d4 0%, #ce19c8 100%);
+    min-width: 400pt;
+    min-height: 280pt;
+    VerticalLayout {
+        alignment: center;
+        HorizontalLayout {
+            alignment: center;
+
+            // Select Screen
+            Container {
+                width: { if current_state == AppState.Select { 300pt } else { 0pt } };
+                visible: current_state == AppState.Select;
+                VerticalLayout {
+                    alignment: LayoutAlignment.stretch;
+                    spacing: 10pt;
+                    padding: 15pt;
+            
+                    Text {
+                        height: 20pt;
+                        horizontal-alignment: TextHorizontalAlignment.center;
+                        color: #ffffffee;
+                        font-size: 15pt;
+                        text: "Select Archive Device";
+                        vertical-alignment: TextVerticalAlignment.center;
+                    }
+            
+                    HorizontalLayout {
+                        height: 25pt;
+                        spacing: 10pt;
+            
+                        ComboBox {
+                            model: ["first", "second", "third"];
+                        }
+            
+                        Button {
+                            width: 60pt;
+                            text: "Select";
+                        }
+                    }
+            
+                    HorizontalLayout {
+                        height: 20pt;
+                        spacing: 10pt;
+            
+                        Path {
+                            commands: "M0 1H2";
+                            stroke-width: 1px;
+                            stroke: #ffffff66;
+                        }
+            
+                        Text {
+                            font-size: 12pt;
+                            horizontal-alignment: TextHorizontalAlignment.center;
+                            color: #ffffff66;
+                            text: "or";
+                            vertical-alignment: TextVerticalAlignment.center;
+                        }
+            
+                        Path {
+                            commands: "M0 1H2";
+                            stroke-width: 1px;
+                            stroke: #ffffff66;
+                        }
+                    }
+            
+                    Text {
+                        height: 20pt;
+                        horizontal-alignment: TextHorizontalAlignment.center;
+                        color: #ffffffee;
+                        font-size: 15pt;
+                        text: "Select Archive Directory";
+                        vertical-alignment: TextVerticalAlignment.center;
+                    }
+            
+                    HorizontalLayout {
+                        height: 25pt;
+                        alignment: center;
+            
+                        Button {
+                            width: 90pt;
+                            text: "Browse";
+                            clicked => {
+                                selected_path = root.open_folder_dialog();
+                                if selected_path != ""
+                                { 
+                                    current_state = AppState.Manipulate;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Manipulate Screen
+            Container {
+                width: { if current_state == AppState.Manipulate { 300pt } else { 0pt } };
+                visible: current_state == AppState.Manipulate;
+            }
+
+
+        }
+    }
+}
