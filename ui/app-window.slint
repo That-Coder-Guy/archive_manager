@@ -1,8 +1,10 @@
 import { Button, VerticalBox, GridBox, ComboBox, TextEdit, ScrollView, LineEdit, GroupBox, HorizontalBox } from "std-widgets.slint";
+import "./LupinademoRegular-X3ovd.otf";
+import "./Aquire-BW0ox.otf";
 
 export enum AppState {
     Select,
-    Manipulate
+    Analysis
 }
 
 export component Container inherits Rectangle {
@@ -12,6 +14,10 @@ export component Container inherits Rectangle {
     drop-shadow-color: #00000066;
 }
 
+export component SelectionScreen inherits Container {
+    
+}
+
 export component AppWindow inherits Window
 {
     // Callbacks
@@ -19,21 +25,22 @@ export component AppWindow inherits Window
 
     // Properties
     in-out property <string> selected_path: "";
-    in-out property <AppState> current_state: AppState.Select;
+    in-out property <AppState> current_state: AppState.Analysis;
 
     title: "Archive Manager";
     background: @linear-gradient(135deg, #0094d4 0%, #ce19c8 100%);
     min-width: 400pt;
     min-height: 280pt;
+    default-font-family: "Lupina Demo";
+    
+    // Select Screen
     VerticalLayout {
+        visible: current_state == AppState.Select;
         alignment: center;
         HorizontalLayout {
             alignment: center;
-
-            // Select Screen
             Container {
-                width: { if current_state == AppState.Select { 300pt } else { 0pt } };
-                visible: current_state == AppState.Select;
+                width: 300pt;
                 VerticalLayout {
                     alignment: LayoutAlignment.stretch;
                     spacing: 10pt;
@@ -107,7 +114,8 @@ export component AppWindow inherits Window
                                 selected_path = root.open_folder_dialog();
                                 if selected_path != ""
                                 { 
-                                    current_state = AppState.Manipulate;
+                                    root.
+                                    current_state = AppState.Analysis;
                                 }
                             }
                         }
@@ -115,13 +123,57 @@ export component AppWindow inherits Window
                 }
             }
 
-            // Manipulate Screen
-            Container {
-                width: { if current_state == AppState.Manipulate { 300pt } else { 0pt } };
-                visible: current_state == AppState.Manipulate;
+            
+        }
+    }
+    
+    // Manipulate Screen
+    VerticalLayout {
+        out property <int> file_count: 0;
+        padding: 20pt;
+        Container {
+            visible: current_state == AppState.Analysis;
+            VerticalLayout {
+                alignment: LayoutAlignment.start;
+                spacing: 10pt;
+                padding: 15pt;
+                Text {
+                    font-family: "Aquire";
+                    font-size: 25pt;
+                    text: "Summary";
+                }
+                GridLayout {
+                    height: 40pt;
+                    Row {
+                        Text {
+                            text: "Path";
+                        }
+                        
+                        Text {
+                            horizontal-alignment: right;
+                            text: "0";
+                        }
+                    }
+                    Row {
+                        Path {
+                            colspan: 2;
+                            commands: "M0 1H2";
+                            stroke-width: 1px;
+                            stroke: #ffffff66;
+                        }
+                    }
+                    Row {
+                        Text {
+                            text: "File Count";
+                        }
+                        
+                        Text {
+                            horizontal-alignment: right;
+                            text: "0";
+                        }
+                    }
+                }
             }
-
-
         }
     }
 }
